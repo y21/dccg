@@ -10,7 +10,7 @@ struct presence {
     char* name;
 };
 
-char* get_input(char* str, int length) {
+void get_input(char* str, int length) {
     int n = 0;
     char temp;
     while((temp = getchar()) != '\n') {
