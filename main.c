@@ -5,6 +5,11 @@
 #define TOKEN_BUFF 64
 #define PREFIX_BUFF 4
 
+struct presence {
+    char* type;
+    char* name;
+};
+
 char* get_input(char* str, int length) {
     int n = 0;
     char temp;
@@ -24,6 +29,7 @@ int main() {
     char temp;
     char* token = (char*) malloc(sizeof(char) * TOKEN_BUFF);
     char* prefix = (char*) malloc(sizeof(char) * PREFIX_BUFF);
+    struct presence prs;
     FILE* fd = fopen("config.json", "w+");
     int delete_messages;
 
@@ -37,6 +43,9 @@ int main() {
     } else {
         delete_messages = temp == 'y';
     }
+
+    // Write to file
+    fprintf(fd, "{\n\t\"token\": \"%s\"\n}", token);
 
     fclose(fd);
     free(token);
