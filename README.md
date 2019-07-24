@@ -1,2 +1,2 @@
 # dccg
-discordcaptcha config file generator
+this is still a WIP ok
