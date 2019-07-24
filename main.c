@@ -21,14 +21,24 @@ char* get_input(char* str, int length) {
 int main() {
     const char version[] = "v1.1";
 
+    char temp;
     char* token = (char*) malloc(sizeof(char) * TOKEN_BUFF);
     char* prefix = (char*) malloc(sizeof(char) * PREFIX_BUFF);
+    FILE* fd = fopen("config.json", "w+");
+    int delete_messages;
 
     printf("====== DiscordCaptcha Config File Generator %s ======\nBot Token: ", version);
     get_input(token, TOKEN_BUFF);
     printf("Prefix: ");
     get_input(prefix, PREFIX_BUFF);
+    printf("Delete Messages (y/n): ");
+    if ((temp = getchar()) != 'y' && temp != 'n') {
+        fprintf(stderr, "%s", "\"Delete Messages\" expects 'y' or 'n'.");
+    } else {
+        delete_messages = temp == 'y';
+    }
 
+    fclose(fd);
     free(token);
     free(prefix);
 }
