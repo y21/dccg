@@ -118,8 +118,11 @@ void save(FILE* handle) {
         "\n\t},"
         "\n\t\"ignoreServers\": [],"
         "\n\t\"commands\": {"
-        "\n}"
     );
+
+    for (int i = 0; i < sizeof(commands) / sizeof(struct command); ++i) {
+        // TODO: commands...
+    }
 }
 
 int main() {
