@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #define TOKEN_BUFF 64
 #define PREFIX_BUFF 4
@@ -9,6 +10,7 @@
 #define SNOWFLAKE_LEN 20
 #define IGNORED_SERVERS_LEN 8
 #define COMMAND_NAME_LENGTH 12
+#define MAX_PERMISSION_LENGTH 28
 #define DCCG_VER "1.1"
 
 enum presence_type {
@@ -34,6 +36,8 @@ struct command {
     char** executors;
     char** requiredPermissions;
     int enabled;
+    int executorCount;
+    int permissionCount;
 };
 
 // Config data
@@ -68,6 +72,19 @@ void get_input(char* str, int length) {
         }
     }
     str[n] = '\0';
+}
+
+void get_input_c(char c) {
+    int n = 0;
+    while(1) {
+        char temp = getchar();
+        if (temp == '\n') {
+            if (n > 0) break;
+        } else {
+            c = temp;
+            n++;
+        }
+    }
 }
 
 void save(FILE* handle) {
@@ -137,7 +154,42 @@ int main() {
     }
 
     // Commands
+    printf("- Commands\n");
     for (int i = 0; i < sizeof(commands) / sizeof(struct command); ++i) {
+        struct command cmd = commands[i];
+        char enableCmd;
+        printf("\nEnable command \"%s\"? (y/n): ", cmd.name);
+        scanf(" %c", &enableCmd);
+        if (enableCmd != 'y' && enableCmd != 'n') {
+            printf("[!] 'y' or 'n' expected.\n");
+            i--;
+            continue;
+        } else {
+            cmd.enabled = enableCmd == 'y';
+        }
+
+        printf("Total command executors (-1 to allow everyone to execute this command): ");
+        scanf("%d", &cmd.executorCount);
+        if (cmd.executorCount != -1) {
+            cmd.executors = (char**) malloc(cmd.executorCount * SNOWFLAKE_LEN); // TODO: free() this later
+            for (int j = 0; j < cmd.executorCount; ++j) {
+                printf("[%s] Enter User ID: ", cmd.name);
+                get_input(cmd.executors[j], SNOWFLAKE_LEN);
+            }
+        }
+
+        printf("Required permissions to execute command (-1 for no permissions): ");
+        scanf("%d", &cmd.permissionCount);
+        if (cmd.permissionCount != -1) {
+            cmd.requiredPermissions = (char**) malloc(cmd.permissionCount * MAX_PERMISSION_LENGTH); // TODO: free() this later
+            for (int j = 0; j < cmd.permissionCount; ++j) {
+                printf("[%s] Enter Permission: ", cmd.name);
+                get_input(cmd.requiredPermissions[j], MAX_PERMISSION_LENGTH);
+                for (int k = 0; k < strlen(cmd.requiredPermissions[j]); ++k) {
+                    cmd.requiredPermissions[j][k] = toupper(cmd.requiredPermissions[j][k]);
+                }
+            }
+        }
 
     }
 
