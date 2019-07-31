@@ -89,8 +89,20 @@ void get_input_c(char c) {
 
 void save(FILE* handle) {
     fprintf(handle,
-        "{\n\t\"token\": \"%s\""
-    , token);
+        "{\n\t\"token\": \"%s\","
+        "\n\t\"prefix\": \"%s\","
+        "\n\t\"deleteMessages\": %s,"
+        "\n\t\"presence\": {"
+        "\n\t\t\"type\": \"%s\","
+        "\n\t\t\"name\": \"%s\""
+        "\n\t}"
+        "\n}",
+        token, prefix, delete_messages == 1 ? "true" : "false", 
+        prs.type == PLAYING ? "playing" : (prs.type == WATCHING ? "watching" : "listening"),
+        prs.name
+    );
+
+    fclose(handle);
 }
 
 int main() {
@@ -200,7 +212,6 @@ int main() {
 
     // Write to file and close
     save(fd);
-    fclose(fd);
 
     // Free memory
     free(token);
