@@ -95,14 +95,31 @@ void save(FILE* handle) {
         "\n\t\"presence\": {"
         "\n\t\t\"type\": \"%s\","
         "\n\t\t\"name\": \"%s\""
-        "\n\t}"
-        "\n}",
+        "\n\t},"
+        "\n\t\"servers\": {",
         token, prefix, delete_messages == 1 ? "true" : "false", 
         prs.type == PLAYING ? "playing" : (prs.type == WATCHING ? "watching" : "listening"),
         prs.name
     );
 
-    fclose(handle);
+    for (int i = 0; i < serverCount; ++i) {
+        fprintf(handle, 
+            "\n\t\t\"%s\": {"
+            "\n\t\t\t\"verificationChannel\": \"%s\""
+            "\n\t\t\t\"verifyRole\": \"%s\""
+            "\n\t\t}",
+            servers[i].id, servers[i].verificationChannel, servers[i].verifyRole
+        );
+        if (i != serverCount - 1)
+            fprintf(handle, ", ");
+    }
+
+    fprintf(handle, 
+        "\n\t},"
+        "\n\t\"ignoreServers\": [],"
+        "\n\t\"commands\": {"
+        "\n}"
+    );
 }
 
 int main() {
@@ -153,17 +170,6 @@ int main() {
             get_input(servers[i].verificationChannel, SNOWFLAKE_LEN);
             printf("[%d] Verification Role ID: ", i + 1);
             get_input(servers[i].verifyRole, SNOWFLAKE_LEN);
-        }
-    }
-
-    // Ignore servers
-    printf("- Ignore servers\nHow many servers should be ignored? (-1 to skip): ");
-    scanf("%d", &serverIgnoreCount);
-    if (serverIgnoreCount != -1) {
-        ignoredServers = (char**) malloc(serverIgnoreCount * SNOWFLAKE_LEN);
-        for (int i = 0; i < serverIgnoreCount; ++i) {
-            printf("[%d] Enter Server ID to ignore: ", i + 1);
-            get_input(ignoredServers[i], SNOWFLAKE_LEN);
         }
     }
 
