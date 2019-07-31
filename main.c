@@ -88,7 +88,9 @@ void get_input_c(char c) {
 }
 
 void save(FILE* handle) {
-    fprintf(handle, "{\n\t\"token\": \"%s\"\n}", token);
+    fprintf(handle,
+        "{\n\t\"token\": \"%s\""
+    , token);
 }
 
 int main() {
@@ -167,6 +169,8 @@ int main() {
         } else {
             cmd.enabled = enableCmd == 'y';
         }
+
+        if (cmd.enabled == 0) continue;
 
         printf("Total command executors (-1 to allow everyone to execute this command): ");
         scanf("%d", &cmd.executorCount);
