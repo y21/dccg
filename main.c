@@ -88,41 +88,42 @@ void get_input_c(char c) {
 }
 
 void save(FILE* handle) {
-    fprintf(handle,
-        "{\n\t\"token\": \"%s\","
-        "\n\t\"prefix\": \"%s\","
-        "\n\t\"deleteMessages\": %s,"
-        "\n\t\"presence\": {"
-        "\n\t\t\"type\": \"%s\","
-        "\n\t\t\"name\": \"%s\""
-        "\n\t},"
-        "\n\t\"servers\": {",
-        token, prefix, delete_messages == 1 ? "true" : "false", 
-        prs.type == PLAYING ? "playing" : (prs.type == WATCHING ? "watching" : "listening"),
-        prs.name
-    );
+    char file_buff[1024];
+
+    strcpy(file_buff, "{\n\t\"token\": \"");
+    strcat(file_buff, token);
+    strcat(file_buff, "\",\n\t\"prefix\": \"");
+    strcat(file_buff, prefix);
+    strcat(file_buff, "\",\n\t\"deleteMessages\": \"");
+    strcat(file_buff, delete_messages == 1 ? "true" : "false");
+    strcat(file_buff, "\",\n\t\"presence\": {\n\t\t\"type\": \"");
+    strcat(file_buff, prs.type == PLAYING ? "playing" : (prs.type == WATCHING ? "watching" : "listening"));
+    strcat(file_buff, "\",\n\t\t\"name\": \"");
+    strcat(file_buff, prs.name);
+    strcat(file_buff, "\"\n\t},\n\t\"servers\": {");
+
 
     for (int i = 0; i < serverCount; ++i) {
-        fprintf(handle, 
-            "\n\t\t\"%s\": {"
-            "\n\t\t\t\"verificationChannel\": \"%s\""
-            "\n\t\t\t\"verifyRole\": \"%s\""
-            "\n\t\t}",
-            servers[i].id, servers[i].verificationChannel, servers[i].verifyRole
-        );
+        strcat(file_buff, "\n\t\t\"");
+        strcat(file_buff, servers[i].id);
+        strcat(file_buff, "\": {\n\t\t\t\"verificationChannel\": \"");
+        strcat(file_buff, servers[i].verificationChannel);
+        strcat(file_buff, "\",\n\t\t\t\"verifyRole\": \"");
+        strcat(file_buff, servers[i].verifyRole);
+        strcat(file_buff, "\n\t\t}");
+
         if (i != serverCount - 1)
-            fprintf(handle, ", ");
+            strcat(file_buff, ",");
     }
 
-    fprintf(handle, 
-        "\n\t},"
-        "\n\t\"ignoreServers\": [],"
-        "\n\t\"commands\": {"
-    );
+    strcat(file_buff, "\n\t},\n\t\"ignoreServers\": [],\n\t\"commands\": {}\n}");
 
     for (int i = 0; i < sizeof(commands) / sizeof(struct command); ++i) {
         // TODO: commands...
     }
+
+    fprintf(handle, file_buff);
+
 }
 
 int main() {
