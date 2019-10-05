@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 // Constants
+#define VERSION "1.2"
 #define MAX_TOKEN_LEN 64
 #define MAX_PREFIX_LEN 8
 #define MAX_PRESENCE_NAME_LEN 32
@@ -38,5 +39,20 @@ int ignored_servers[MAX_IGNORED_SERVERS];
 
 // Main
 int main() {
+	printf(
+		"--- Discordcaptcha Config File Generator %s ---\n"
+		"1    Config\n"
+		"2    Exit\n"
+	, VERSION);
+	int input;
+	scanf("%d", &input);
 	
+	switch(input) {
+		case 1:
+			
+		break;
+		case 2:
+			return 0;
+		break;
+	}
 }
