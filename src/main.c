@@ -73,7 +73,7 @@ int main() {
 	int input;
 	scanf("%d", &input);
 	getchar(); // \n in buffer
-
+	printf("\n");
 	switch(input) {
 		case 1: {
 			FILE* fd = fopen("config.json", "w+");
