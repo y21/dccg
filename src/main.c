@@ -46,10 +46,23 @@ int main() {
 	, VERSION);
 	int input;
 	scanf("%d", &input);
-	
+	getchar(); // \n in buffer
+
 	switch(input) {
-		case 1:
-			
+		case 1: {
+			FILE* fd = fopen("config.json", "w+");
+
+			printf("Enter Bot Token: ");
+			fgets(token, sizeof(token), stdin);
+
+			printf("ok your token is %s\n", token);
+
+	printf("Enter Prefix: ");
+	fgets(prefix, sizeof(prefix), stdin);
+
+	printf("ok your prefix is %s\n", prefix);
+
+		}
 		break;
 		case 2:
 			return 0;
