@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 // Constants
 #define VERSION "1.2"
@@ -33,7 +34,7 @@ typedef struct {
 	int executors_count;
 	char executors[MAX_EXECUTORS][MAX_SNOWFLAKE_LEN];
 	int permissions_count;
-	char required_permissions[MAX_PERMISSIONS][MAX_PERMISSION_LEN];
+	char permissions[MAX_PERMISSIONS][MAX_PERMISSION_LEN];
 	int enabled;
 } command;
 
@@ -44,11 +45,11 @@ int delete_messages;
 presence prs;
 guild servers[MAX_GUILD_LEN];
 int guild_count;
-int ignored_servers[MAX_IGNORED_SERVERS];
+char ignored_servers[MAX_IGNORED_SERVERS][MAX_SNOWFLAKE_LEN];
 int guild_ignore_count;
 command commands[] = {
-	{ "ping", {}, {}, 1 },
-	{ "verify", {}, {}, 1 }
+	{ "ping", 0, {}, 0, {}, 1 },
+	{ "verify", 0, {}, 0, {}, 1 }
 };
 
 
@@ -76,7 +77,6 @@ int main() {
 	switch(input) {
 		case 1: {
 			FILE* fd = fopen("config.json", "w+");
-			fprintf(fd, "{}");
 
 			printf("Enter Bot token: ");
 			fgets(token, sizeof(token), stdin);
@@ -140,7 +140,10 @@ int main() {
 				fprintf(stderr, "[x] guild_ignore_count must have a value between 0 and 8.");
 				return 1;
 			}
-			// TODO: ask for ignored servers
+			for (int i = 0; i < guild_ignore_count; ++i) {
+				printf("    [IG%d] Guild ID: ", i + 1);
+				fgets(ignored_servers[i], sizeof(ignored_servers[i]), stdin);
+			}
 
 			for (int i = 0; i < sizeof(commands) / sizeof(command); ++i) {
 				printf("  [C%d] Enable command %s (1 = yes, 0 = no): ", i + 1, commands[i].command_name);
@@ -150,13 +153,66 @@ int main() {
 					fprintf(stderr, "  [x] commands[%d] (~%s).enabled must have a value between 0 and 1.", i, commands[i].command_name);
 					return 1;
 				}
+
 				printf("    [C%d][1] How many users should be allowed to execute this command (0 = everyone): ", i + 1);
 				scanf("%d", &commands[i].executors_count);
+				getchar();
 				for (int j = 0; j < commands[i].executors_count; ++j) {
-					printf(""); // TODO: ask for user ids
+					printf("      [C%d][1] Enter User ID: ");
+					fgets(commands[i].executors[j], sizeof(commands[i].executors[j]), stdin);
+				}
+
+				printf("    [C%d][2] How many permissions are required for this command (0-8): ", i + 1);
+				scanf("%d", &commands[i].permissions_count);
+				getchar();
+				for (int j = 0; j < commands[i].permissions_count; ++j) {
+					printf("      [C%d][2] Enter Permission (in UPPERCASE-letters): ");
+					fgets(commands[i].permissions[j], sizeof(commands[i].permissions[j]), stdin);
 				}
 			}
 
+			printf("\nDone! Writing to output file...");
+			
+			// Write to file
+			char* buff = (char*)malloc(sizeof(char) * 2048); // allocate 2kb
+
+			strcat(buff, "{\n"
+						 "    \"token\": \""
+			);
+			strcat(buff, token);
+			strcat(buff, "\",\n"
+						 "    \"prefix\": \""
+			);
+			strcat(buff, prefix);
+			strcat(buff, "\",\n"
+						 "    \"deleteMessages\": "
+			);
+			strcat(buff, delete_messages == 1 ? "true" : "false");
+			strcat(buff, ",\n"
+						 "    \"presence\": "
+			);
+			if (strcmp(prs.type, "")) 
+				strcat(buff, "{},\n");
+			else {
+				strcat(buff, "{\n"
+							 "        \"type\": \""
+				);
+				strcat(buff, prs.type);
+				strcat(buff, "\",\n"
+							 "        \"name\": \""
+				);
+				strcat(buff, prs.name);
+				strcat(buff, "\"\n"
+							 "    },\n"
+				);
+			}
+			
+			
+
+
+			fprintf(fd, "%s", buff);
+			free(buff);
+			fclose(fd);
 		}
 		break;
 		case 2:
