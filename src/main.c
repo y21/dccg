@@ -54,14 +54,6 @@ int main() {
 
 			printf("Enter Bot Token: ");
 			fgets(token, sizeof(token), stdin);
-
-			printf("ok your token is %s\n", token);
-
-	printf("Enter Prefix: ");
-	fgets(prefix, sizeof(prefix), stdin);
-
-	printf("ok your prefix is %s\n", prefix);
-
 		}
 		break;
 		case 2:
