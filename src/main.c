@@ -84,7 +84,8 @@ int main() {
 			
 			printf("Enter prefix: ");
 			fgets(prefix, sizeof(prefix), stdin);
-
+			prefix[strcspn(prefix, "\n")] = 0;
+			
 			printf("Delete messages (1 = yes, 0 = no): ");
 			scanf("%d", &delete_messages);
 			getchar(); // \n
@@ -95,10 +96,12 @@ int main() {
 
 			printf("Presence type (leave blank if no presence): ");
 			fgets(prs.type, sizeof(prs.type), stdin);
+			prs.type[strcspn(prs.type, "\n")] = 0;
 
-			if (!strcmp(prs.name, "")) {
+			if (strcmp(prs.type, "")) {
 				printf("Presence name: ");
 				fgets(prs.name, sizeof(prs.name), stdin);
+				prs.name[strcspn(prs.name, "\n")] = 0;
 			}
 
 			printf("To how many servers should discordcaptcha listen to (1-16): ");
@@ -113,12 +116,15 @@ int main() {
 			for(int i = 0; i < guild_count; ++i) {
 				printf("  [G%d] Guild ID: ", i + 1);
 				fgets(servers[i].id, sizeof(servers[i].id), stdin);
+				servers[i].id[strcspn(servers[i].id, "\n")] = 0;
 
 				printf("  [G%d] Verification Channel ID: ", i + 1);
 				fgets(servers[i].verification_channel, sizeof(servers[i].verification_channel), stdin);
+				servers[i].verification_channel[strcspn(servers[i].verification_channel, "\n")] = 0;
 
 				printf("  [G%d] Verification Role ID: ", i + 1);
 				fgets(servers[i].verification_role, sizeof(servers[i].verification_role), stdin);
+				servers[i].verification_role[strcspn(servers[i].verification_role, "\n")] = 0;
 
 				if (!validate_snowflake(servers[i].id)) {
 					printf("  [x] [G%d] Invalid Guild ID\n", i + 1);
@@ -144,6 +150,7 @@ int main() {
 			for (int i = 0; i < guild_ignore_count; ++i) {
 				printf("    [IG%d] Guild ID: ", i + 1);
 				fgets(ignored_servers[i], sizeof(ignored_servers[i]), stdin);
+				ignored_servers[i][strcspn(ignored_servers[i], "\n")] = 0;
 			}
 
 			for (int i = 0; i < sizeof(commands) / sizeof(command); ++i) {
@@ -161,6 +168,7 @@ int main() {
 				for (int j = 0; j < commands[i].executors_count; ++j) {
 					printf("      [C%d][1] Enter User ID: ");
 					fgets(commands[i].executors[j], sizeof(commands[i].executors[j]), stdin);
+					commands[i].executors[j][strcspn(commands[i].executors[j], "\n")] = 0;
 				}
 
 				printf("    [C%d][2] How many permissions are required for this command (0-8): ", i + 1);
@@ -169,6 +177,7 @@ int main() {
 				for (int j = 0; j < commands[i].permissions_count; ++j) {
 					printf("      [C%d][2] Enter Permission (in UPPERCASE-letters): ");
 					fgets(commands[i].permissions[j], sizeof(commands[i].permissions[j]), stdin);
+					commands[i].permissions[j][strcspn(commands[i].permissions[j], "\n")] = 0;
 				}
 			}
 
@@ -192,7 +201,7 @@ int main() {
 			strcat(buff, ",\n"
 						 "    \"presence\": "
 			);
-			if (strcmp(prs.type, "")) 
+			if (!strcmp(prs.type, "")) 
 				strcat(buff, "{},\n");
 			else {
 				strcat(buff, "{\n"
@@ -207,9 +216,6 @@ int main() {
 							 "    },\n"
 				);
 			}
-			strcat(buff, "start");
-			strcat(buff, token);
-			strcat(buff, "end");
 
 
 			fprintf(fd, "%s", buff);
