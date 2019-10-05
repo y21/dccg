@@ -235,7 +235,58 @@ int main() {
 				);
 				strcat(buff, i != guild_count - 1 ? ",\n" : "\n");
 			}
-			strcat(buff, "    },");
+			strcat(buff, "    },\n"
+						 "    \"ignoreServers\": [\n"
+			);
+			for (int i = 0; i < guild_ignore_count; ++i) {
+				strcat(buff, "        \"");
+				strcat(buff, ignored_servers[i]);
+				strcat(buff, "\"");
+				if (i == guild_ignore_count - 1)
+					strcat(buff, "\n");
+				else strcat(buff, ",\n");
+			}
+			strcat(buff, "    ],\n"
+						 "    \"commands\": {\n"
+			);
+			for (int i = 0; i < sizeof(commands) / sizeof(command); ++i) {
+				strcat(buff, "        \"");
+				strcat(buff, commands[i].command_name);
+				strcat(buff, "\": {\n"
+							 "            \"executors\": [\n"
+				);
+				for (int j = 0; j < commands[i].executors_count; ++j) {
+					strcat(buff, "                \"");
+					strcat(buff, commands[i].executors[j]);
+					strcat(buff, "\"");
+					if (i == commands[i].executors_count - 1)
+						strcat(buff, "\n");
+					else strcat(buff, ",\n");
+				}
+				strcat(buff, "            ],\n"
+							 "            \"requiredPermissions\": [\n"
+				);
+
+				for (int j = 0; j < commands[i].permissions_count; ++j) {
+                	strcat(buff, "                \"");
+                	strcat(buff, commands[i].permissions[j]);
+                	strcat(buff, "\"");
+                	if (i == commands[i].permissions_count - 1)
+                		strcat(buff, "\n");
+                	else strcat(buff, ",\n");
+                }
+				strcat(buff, "            ],\n"
+                			 "            \"enabled\": "
+                );
+				strcat(buff, commands[i].enabled ? "true" : "false");
+				strcat(buff, "\n        }");
+				if (i == sizeof(commands) / sizeof(command) - 1)
+					strcat(buff, "\n");
+				else strcat(buff, ",\n");
+			}
+			strcat(buff, "    }\n"
+						 "}");
+
 			
 			fprintf(fd, "%s", buff);
 			free(buff);
