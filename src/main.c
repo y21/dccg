@@ -42,7 +42,7 @@ presence prs;
 guild servers[MAX_GUILD_LEN];
 int guild_count;
 int ignored_servers[MAX_IGNORED_SERVERS];
-
+int guild_ignore_count;
 
 int validate_snowflake(char snf[MAX_SNOWFLAKE_LEN]) {
 	for(int i = 0; i < strlen(snf); ++i) {
@@ -80,7 +80,7 @@ int main() {
 			getchar(); // \n
 			if (delete_messages > 1 || delete_messages < 0) {
 				fprintf(stderr, "[x] delete_messages must have a value between 0 and 1.");
-				exit(1);
+				return 1;
 			}
 
 			printf("Presence type (leave blank if no presence): ");
@@ -96,8 +96,8 @@ int main() {
 			getchar();
 
 			if (guild_count > 16 || guild_count < 1) {
-				fprintf("[x] guild_count must have a value between 1 and 16.");
-				exit(1);
+				fprintf(stderr, "[x] guild_count must have a value between 1 and 16.");
+				return 1;
 			}
 
 			for(int i = 0; i < guild_count; ++i) {
@@ -123,6 +123,10 @@ int main() {
 					servers[i].valid = 1;
 				}
 			}
+			
+			printf("How many servers should be ignored (0-8): ");
+			scanf("%d", &guild_ignore_count);
+			getchar();
 		}
 		break;
 		case 2:
