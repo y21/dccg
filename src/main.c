@@ -51,9 +51,17 @@ int main() {
 	switch(input) {
 		case 1: {
 			FILE* fd = fopen("config.json", "w+");
+			fprintf(fd, "{}");
 
-			printf("Enter Bot Token: ");
+			printf("Enter Bot token: ");
 			fgets(token, sizeof(token), stdin);
+
+			printf("Enter prefix: ");
+			fgets(prefix, sizeof(prefix), stdin);
+
+			printf("Delete messages (1 = yes, 0 = no): ");
+			scanf("%d", &delete_messages);
+			getchar(); // \n
 		}
 		break;
 		case 2:
