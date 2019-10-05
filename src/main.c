@@ -80,7 +80,8 @@ int main() {
 
 			printf("Enter Bot token: ");
 			fgets(token, sizeof(token), stdin);
-
+			token[strcspn(token, "\n")] = 0;
+			
 			printf("Enter prefix: ");
 			fgets(prefix, sizeof(prefix), stdin);
 
@@ -206,8 +207,9 @@ int main() {
 							 "    },\n"
 				);
 			}
-			
-			
+			strcat(buff, "start");
+			strcat(buff, token);
+			strcat(buff, "end");
 
 
 			fprintf(fd, "%s", buff);
