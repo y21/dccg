@@ -32,6 +32,7 @@ typedef struct {
 	char command_name[MAX_COMMAND_NAME_LEN];
 	char executors[MAX_EXECUTORS][MAX_SNOWFLAKE_LEN];
 	char required_permissions[MAX_PERMISSIONS][MAX_PERMISSION_LEN];
+	int enabled;
 } command;
 
 // Data
@@ -43,6 +44,12 @@ guild servers[MAX_GUILD_LEN];
 int guild_count;
 int ignored_servers[MAX_IGNORED_SERVERS];
 int guild_ignore_count;
+command commands[] = {
+	{ "ping" },
+	{ "verify" }
+};
+
+
 
 int validate_snowflake(char snf[MAX_SNOWFLAKE_LEN]) {
 	for(int i = 0; i < strlen(snf); ++i) {
@@ -55,6 +62,7 @@ int validate_snowflake(char snf[MAX_SNOWFLAKE_LEN]) {
 
 // Main
 int main() {
+	printf("%s", commands[0].command_name);
 	printf(
 		"--- Discordcaptcha Config File Generator %s ---\n"
 		"1    Config\n"
@@ -127,6 +135,12 @@ int main() {
 			printf("How many servers should be ignored (0-8): ");
 			scanf("%d", &guild_ignore_count);
 			getchar();
+			if (guild_ignore_count > 8 || guild_ignore_count < 0) {
+				fprintf(stderr, "[x] guild_ignore_count must have a value between 0 and 8.");
+				return 1;
+			}
+
+
 		}
 		break;
 		case 2:
