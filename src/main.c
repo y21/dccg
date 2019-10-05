@@ -216,8 +216,27 @@ int main() {
 							 "    },\n"
 				);
 			}
-
-
+			
+			strcat(buff, "    \"servers\": {\n");
+			for (int i = 0; i < guild_count; ++i) {
+				strcat(buff, "        \"");
+				strcat(buff, servers[i].id);
+				strcat(buff, 
+					"\": {\n"
+					"            \"verificationChannel\": \""
+				);
+				strcat(buff, servers[i].verification_channel);
+				strcat(buff, "\",\n"
+							 "            \"verifyRole\": \""
+				);
+				strcat(buff, servers[i].verification_role);
+				strcat(buff, "\"\n"
+							 "        }"
+				);
+				strcat(buff, i != guild_count - 1 ? ",\n" : "\n");
+			}
+			strcat(buff, "    },");
+			
 			fprintf(fd, "%s", buff);
 			free(buff);
 			fclose(fd);
