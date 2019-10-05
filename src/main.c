@@ -186,58 +186,35 @@ int main() {
 			// Write to file
 			char* buff = (char*)malloc(sizeof(char) * 2048); // allocate 2kb
 
-			strcat(buff, "{\n"
-						 "    \"token\": \""
-			);
+			strcat(buff, "{\n    \"token\": \"");
 			strcat(buff, token);
-			strcat(buff, "\",\n"
-						 "    \"prefix\": \""
-			);
+			strcat(buff, "\",\n    \"prefix\": \"");
 			strcat(buff, prefix);
-			strcat(buff, "\",\n"
-						 "    \"deleteMessages\": "
-			);
+			strcat(buff, "\",\n    \"deleteMessages\": ");
 			strcat(buff, delete_messages == 1 ? "true" : "false");
-			strcat(buff, ",\n"
-						 "    \"presence\": "
-			);
+			strcat(buff, ",\n    \"presence\": ");
 			if (!strcmp(prs.type, "")) 
 				strcat(buff, "{},\n");
 			else {
-				strcat(buff, "{\n"
-							 "        \"type\": \""
-				);
+				strcat(buff, "{\n        \"type\": \"");
 				strcat(buff, prs.type);
-				strcat(buff, "\",\n"
-							 "        \"name\": \""
-				);
+				strcat(buff, "\",\n        \"name\": \"");
 				strcat(buff, prs.name);
-				strcat(buff, "\"\n"
-							 "    },\n"
-				);
+				strcat(buff, "\"\n    },\n");
 			}
 			
 			strcat(buff, "    \"servers\": {\n");
 			for (int i = 0; i < guild_count; ++i) {
 				strcat(buff, "        \"");
 				strcat(buff, servers[i].id);
-				strcat(buff, 
-					"\": {\n"
-					"            \"verificationChannel\": \""
-				);
+				strcat(buff, "\": {\n            \"verificationChannel\": \"");
 				strcat(buff, servers[i].verification_channel);
-				strcat(buff, "\",\n"
-							 "            \"verifyRole\": \""
-				);
+				strcat(buff, "\",\n            \"verifyRole\": \"");
 				strcat(buff, servers[i].verification_role);
-				strcat(buff, "\"\n"
-							 "        }"
-				);
+				strcat(buff, "\"\n        }");
 				strcat(buff, i != guild_count - 1 ? ",\n" : "\n");
 			}
-			strcat(buff, "    },\n"
-						 "    \"ignoreServers\": [\n"
-			);
+			strcat(buff, "    },\n    \"ignoreServers\": [\n");
 			for (int i = 0; i < guild_ignore_count; ++i) {
 				strcat(buff, "        \"");
 				strcat(buff, ignored_servers[i]);
@@ -246,15 +223,11 @@ int main() {
 					strcat(buff, "\n");
 				else strcat(buff, ",\n");
 			}
-			strcat(buff, "    ],\n"
-						 "    \"commands\": {\n"
-			);
+			strcat(buff, "    ],\n    \"commands\": {\n");
 			for (int i = 0; i < sizeof(commands) / sizeof(command); ++i) {
 				strcat(buff, "        \"");
 				strcat(buff, commands[i].command_name);
-				strcat(buff, "\": {\n"
-							 "            \"executors\": [\n"
-				);
+				strcat(buff, "\": {\n            \"executors\": [\n");
 				for (int j = 0; j < commands[i].executors_count; ++j) {
 					strcat(buff, "                \"");
 					strcat(buff, commands[i].executors[j]);
@@ -263,9 +236,7 @@ int main() {
 						strcat(buff, "\n");
 					else strcat(buff, ",\n");
 				}
-				strcat(buff, "            ],\n"
-							 "            \"requiredPermissions\": [\n"
-				);
+				strcat(buff, "            ],\n            \"requiredPermissions\": [\n");
 
 				for (int j = 0; j < commands[i].permissions_count; ++j) {
                 	strcat(buff, "                \"");
@@ -275,17 +246,14 @@ int main() {
                 		strcat(buff, "\n");
                 	else strcat(buff, ",\n");
                 }
-				strcat(buff, "            ],\n"
-                			 "            \"enabled\": "
-                );
+				strcat(buff, "            ],\n            \"enabled\": ");
 				strcat(buff, commands[i].enabled ? "true" : "false");
 				strcat(buff, "\n        }");
 				if (i == sizeof(commands) / sizeof(command) - 1)
 					strcat(buff, "\n");
 				else strcat(buff, ",\n");
 			}
-			strcat(buff, "    }\n"
-						 "}");
+			strcat(buff, "    }\n}");
 
 			
 			fprintf(fd, "%s", buff);
