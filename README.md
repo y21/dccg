@@ -1,4 +1,6 @@
+#### This is not compatible with discordcaptcha v5+
 # dccg
+
 This repository contains the source code for dccg, a config-file generator for [DiscordCaptcha](https://github.com/y21/discordcaptcha).<br/>
 
 ### Compiling / Linking
